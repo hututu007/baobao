@@ -1,0 +1,44 @@
+{
+  "pages": [
+    "pages/playlist/playlist",
+    "pages/book/book",
+    "pages/book-detail/book-detail",
+    "pages/my/my",
+    "pages/about/about",
+    "pages/course/course"
+  ],
+  "window": {
+    "backgroundColor": "#ffffff",
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#ffffff",
+    "navigationBarTitleText": "凉风有信",
+    "navigationBarTextStyle": "black",
+    "enablePullDownRefresh": false
+  },
+  "tabBar": {
+    "selectedColor": "#000000",
+    "backgroundColor": "#ffffff",
+    "color": "#c7c7c7",
+    "list": [{
+      "pagePath": "pages/playlist/playlist",
+      "text": "流行",
+      "iconPath": "images/music.png",
+      "selectedIconPath": "images/music-actived.png"
+    },
+    {
+      "pagePath": "pages/book/book",
+      "text": "故事",
+      "iconPath": "images/book.png",
+      "selectedIconPath": "images/book-actived.png"
+    },
+    {
+      "pagePath": "pages/my/my",
+      "text": "喜欢",
+      "iconPath": "images/profile.png",
+      "selectedIconPath": "images/profile-actived.png"
+    }
+    ]
+  },
+  "sitemapLocation": "sitemap.json",
+  "requiredBackgroundModes":["audio"]
+}

@@ -1,0 +1,12 @@
+<wxs src="../../util/filter.wxs" module="util" />
+<view class="container">
+    <view class="head">
+        <image src="{{book.img}}"></image>
+        <text class='title'>{{book.title}}</text>
+        <text class='author'>{{book.author}}</text>
+    </view>
+    <view class="sub-container">
+        <text class="headline">内容</text>
+        <text class="content" decode="{{true}}">{{util.format(book.text)}}</text>
+    </view>
+</view>
