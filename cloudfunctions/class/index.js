@@ -20,6 +20,15 @@ exports.main = async (event, context) => {
         return res
       })
   })
+  app.router('class/last', async (ctx, next) => {
+    ctx.body = await cloud.database().collection('class')
+      .orderBy('index', 'desc')
+      .skip(0).limit(1)
+      .get()
+      .then((res) => {
+        return res
+      })
+  })
   const wxContext = cloud.getWXContext()
   app.router('likeCount', async (ctx, next) => { // 获取期刊的点赞总数
     ctx.body = await cloud.database().collection('likeStatus')
