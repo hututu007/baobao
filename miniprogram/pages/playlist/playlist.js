@@ -3,6 +3,10 @@
 // 音乐组件有点难度，音乐的播放状态切换是更具组件的销毁来决定的所以音乐数据中间要有别的数据
 // 更具数据的不同状态来显示不同的组件
 // 喜欢功能还没有做
+import {
+  ClassModel
+} from '../../models/class.js'
+const classModel = new ClassModel()
 Page({
 
   /**
@@ -26,6 +30,9 @@ Page({
   onLoad(options) {
     this._getPlaylist()
     this._getLike()
+    classModel.getClassLast().then(res=>{
+      console.log(res)
+    })
   },
 
   onLike: function (event) { // 点赞时候要做的事
