@@ -20,10 +20,30 @@ exports.main = async (event, context) => {
         return res
       })
   })
-  app.router('class/last', async (ctx, next) => {
+  app.router('class/last', async (ctx, next) => { //最新
     ctx.body = await cloud.database().collection('class')
       .orderBy('index', 'desc')
       .skip(0).limit(1)
+      .get()
+      .then((res) => {
+        return res
+      })
+  })
+  app.router('class/Right', async (ctx, next) => { // 右键
+    ctx.body = await cloud.database().collection('class')
+      .where({
+        index: event.index - 1
+      })
+      .get()
+      .then((res) => {
+        return res
+      })
+  })
+  app.router('class/Left', async (ctx, next) => { // 左键
+    ctx.body = await cloud.database().collection('class')
+      .where({
+        index: event.index + 1
+      })
       .get()
       .then((res) => {
         return res

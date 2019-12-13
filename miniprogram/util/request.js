@@ -1,14 +1,12 @@
 class HTTP {
   request({
     cloudFn,
-    url
+    data = {}
   }) {
     return new Promise((resolve, reject) => {
       wx.cloud.callFunction({
           name: cloudFn,
-          data: {
-            $url: url
-          }
+          data
         })
         .then((res) => {
           resolve(res)
