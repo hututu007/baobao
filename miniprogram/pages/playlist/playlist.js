@@ -1,3 +1,10 @@
+/*
+ * @Author: 胡海
+ * @Date: 2019-12-09 21:23:49
+ * @LastEditors: 胡海
+ * @LastEditTime: 2019-12-14 22:35:07
+ * @Description: 
+ */
 // 这个地方需要优化的是切换按钮逻辑
 // 三个组件
 // 音乐组件有点难度，音乐的播放状态切换是更具组件的销毁来决定的所以音乐数据中间要有别的数据
@@ -15,12 +22,10 @@ Page({
 
   data: {
     classic: null, // 整个页面的数据
-    latest: true, // 左边边按钮隐藏
-    first: false, // 右边按钮隐藏
+    leftDisable: true, // 左边边按钮隐藏
+    rightDisable: false, // 右边按钮隐藏
     likeCount: 0, // 点赞总数
     likeStatus: false, // 当前用户是否点赞
-    resArr: [], // 所有期刊
-    preIndex: 0, // 切换的序号
   },
 
   /**
@@ -29,100 +34,81 @@ Page({
 
   onLoad(options) {
     this._getPlaylist()
-    this._getLike()
-    classModel.getClassLast().then(res=>{
-      console.log(res)
-    })
   },
 
   onLike: function (event) { // 点赞时候要做的事
     const behavior = event.detail.behavior
-    let status = behavior == 'like' ? 1 : 0
-    console.log(status)
-    wx.cloud.callFunction({
-      name: 'class',
-      data: {
-        $url: 'likeEdit',
-        status
-      }
-    }).then((res) => {
-
-    })
+    classModel.Like({
+        url: behavior,
+        uid: this.data.classic._id
+      })
+      .then(res => {
+        console.log(res)
+      })
   },
 
-  onNext: function (event) { // 点击上一期
-    let Arr = this.data.resArr
-    let Index = this.data.preIndex - 1
-    if (Index >= 0) {
-      this.setData({
-        classic: Arr[Index],
-        preIndex: Index,
-      })
-    }
-    this._btnStatus()
+  onLeft: function (event) { // 点击上一期
+    this._upDateClass('Left')
   },
 
-  onPrevious: function (event) { // 点击下一期
-    let Arr = this.data.resArr
-    let Index = this.data.preIndex + 1
-    if (Arr.length > Index) {
-      this.setData({
-        classic: Arr[Index],
-        preIndex: Index,
-      })
-    }
-    this._btnStatus()
-
+  onRight: function (event) { // 点击下一期
+    this._upDateClass('Right')
   },
-  _btnStatus() {
-    if (this.data.preIndex > 0) {
-      this.setData({
-        latest: false,
+  _upDateClass(url) { // 跟新期刊
+    // 1根据index判断按钮显示
+    // 写入缓存 确定key
+    //我有必要把逻辑全写在这儿吗？
+    let index = this.data.classic.index
+    let key = url == 'Left' ? classModel.getKey(index + 1) : classModel.getKey(index - 1)
+    let classic = wx.getStorageSync(key)
+    if (!classic) {
+      classModel.getClassRightOrLeft({
+        url,
+        index
+      }).then(res => {
+        let data = res.result.data[0]
+        this._getLike(data._id)
+        wx.setStorageSync(key, data)
+        this.setData({
+          leftDisable: classModel.isMaxIndex(data.index),
+          rightDisable: classModel.isMIniIndex(data.index),
+          classic: data
+        })
       })
-    }
-    if (this.data.preIndex <= 0) {
+    } else {
+      this._getLike(classic._id)
       this.setData({
-        latest: true,
-      })
-    }
-    if (this.data.preIndex < this.data.resArr.length - 1) {
-      this.setData({
-        first: false,
-      })
-    }
-    if (this.data.preIndex >= this.data.resArr.length - 1) {
-      this.setData({
-        first: true,
+        leftDisable: classModel.isMaxIndex(classic.index),
+        rightDisable: classModel.isMIniIndex(classic.index),
+        classic
       })
     }
   },
-  _getPlaylist() { // 获取到所有期刊的数据
+  _getPlaylist() { // 获取到最新一期
     wx.showLoading({
       title: '加载中',
     })
-    wx.cloud.callFunction({
-      name: 'class',
-      data: {
-        $url: 'classList',
-      }
-    }).then((res) => {
-      this.setData({
-        resArr: res.result.data,
-        classic: res.result.data[0]
+    classModel.getClassLast()
+      .then(res => {
+        let data = res.result.data[0]
+        this._getLike(data._id)
+        classModel.setLatestIndex(data.index)
+        this.setData({
+          classic: data
+        })
+        wx.hideLoading()
       })
-      wx.hideLoading()
-    })
   },
-  _getLike() { // 获取当前用户的点赞状态
-    wx.cloud.callFunction({
-      name: 'class',
-      data: {
-        $url: 'likeStatus'
-      }
-    }).then((res) => {
-      this.setData({
-        likeStatus: res.result.data[0].status
+  _getLike(uid) {// 获取点赞状态and 数量
+    classModel.getLike({
+        uid
       })
-    })
+      .then(res => {
+        let data = res.result
+        this.setData({
+          likeCount: data.like_nums,
+          likeStatus: data.status
+        })
+      })
   }
 })

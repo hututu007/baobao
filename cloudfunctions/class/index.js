@@ -11,15 +11,6 @@ exports.main = async (event, context) => {
   const app = new TcbRouter({
     event
   })
-
-  app.router('classList', async (ctx, next) => {
-    ctx.body = await cloud.database().collection('class')
-      .orderBy('index', 'desc')
-      .get()
-      .then((res) => {
-        return res
-      })
-  })
   app.router('class/last', async (ctx, next) => { //最新
     ctx.body = await cloud.database().collection('class')
       .orderBy('index', 'desc')
@@ -49,68 +40,149 @@ exports.main = async (event, context) => {
         return res
       })
   })
-  const wxContext = cloud.getWXContext()
-  app.router('likeCount', async (ctx, next) => { // 获取期刊的点赞总数
-    ctx.body = await cloud.database().collection('likeStatus')
-      .where({
-        appId: event.appId
-      })
-      .get()
-      .then((res) => {
-        return res
-      })
-  })
-  app.router('likeStatus', async (ctx, next) => { // 获取点赞状态
-    ctx.body = await cloud.database().collection('likeStatus')
-      .where({
-        _openid: wxContext.OPENID
-      })
-      .get()
-      .then((res) => {
-        return res
-      })
-  })
-  app.router('likeEdit', async (ctx, next) => { // 编辑期刊点赞总数
-    // 进来先查这个用户是否点赞过
-    let user = await cloud.database().collection('likeStatus')
-      .where({
-        _openid: wxContext.OPENID
-      })
-      .get()
-    if (user.data.length != 0) {
-      ctx.body = await cloud.database().collection('likeStatus')
-        .where({
-          _openid: wxContext.OPENID
-        })
-        .update({
-          data: {
-            status: event.status,
-          }
-        })
-        .then((res) => {
-          return res
-          console.log('插入成功')
-        })
-        .catch((err) => {
-          console.error('插入失败')
-        })
-    } else {
-      ctx.body = await cloud.database().collection('likeStatus')
-        .add({
-          data: {
-            _openid: wxContext.OPENID,
-            status: event.status,
-          }
-        })
-        .then((res) => {
-          return res
-          console.log('插入成功')
-        })
-        .catch((err) => {
-          console.error('插入失败')
-        })
-    }
 
+  const wxContext = cloud.getWXContext()
+  app.router('like', async (ctx, next) => { // 点赞
+    let like = await cloud.database().collection('likeStatus')
+      .where({
+        _openid: wxContext.OPENID,
+        uid: event.uid
+      })
+      .get()
+      .then((res) => {
+        return res
+      })
+    if (like.data.length != 0) {
+      ctx.body = {
+        code: 0,
+        msg: '你已经点赞过了'
+      }
+      return
+    }
+    await cloud.database().collection('class')
+      .where({
+        _id: event.uid
+      })
+      .update({
+        data: {
+          like_nums: cloud.database().command.inc(1),
+        }
+      })
+    await cloud.database().collection('likeStatus')
+      .add({
+        data: {
+          _openid: wxContext.OPENID,
+          status: 1,
+          uid: event.uid
+        }
+      })
+      .then((res) => {
+        ctx.body = {
+          code: 0,
+          msg: '点赞成功'
+        }
+        return
+      })
+  })
+  app.router('cancel', async (ctx, next) => { // 取消点赞
+    let like = await cloud.database().collection('likeStatus')
+      .where({
+        _openid: wxContext.OPENID,
+        uid: event.uid
+      })
+      .get()
+      .then((res) => {
+        return res
+      })
+    if (like.data.length == 0) {
+      ctx.body = {
+        code: 0,
+        msg: '你还没有点赞过'
+      }
+      return
+    }
+    await cloud.database().collection('class')
+      .where({
+        _id: event.uid
+      })
+      .update({
+        data: {
+          like_nums: cloud.database().command.inc(-1),
+        }
+      })
+    await cloud.database().collection('likeStatus')
+      .where({
+        _openid: wxContext.OPENID,
+        uid: event.uid
+      })
+      .remove()
+      .then((res) => {
+        ctx.body = {
+          code: 0,
+          msg: '取消点赞成功'
+        }
+        return
+      })
+  })
+  app.router('getLike', async (ctx, next) => { // 获取点赞状态
+    let likeStatus = await cloud.database().collection('likeStatus')
+      .where({
+        _openid: wxContext.OPENID,
+        uid: event.uid
+      })
+      .get()
+      .then((res) => {
+        return res
+      })
+    let likeNum = await cloud.database().collection('class')
+      .where({
+        _id: event.uid
+      })
+      .get()
+      .then(res => {
+        return res
+      })
+    let status = 1
+    if (likeStatus.data.length == 0) {
+      status = 0
+    }
+    ctx.body = {
+      code: 0,
+      status,
+      like_nums: likeNum.data[0].like_nums
+    }
+  })
+
+
+
+  app.router('likeList', async (ctx, next) => { // 获取收藏的期刊列表
+    let likeAll = await cloud.database().collection('likeStatus')
+      .where({
+        _openid: wxContext.OPENID,
+      })
+      .get()
+      .then((res) => {
+        return res.data.map(item => item.uid)
+      })
+    if (likeAll.length == 0) {
+      ctx.body = {
+        code: 0,
+        msg: '你一个喜欢的期刊都没有'
+      }
+      return
+    }
+    let likeNum = await cloud.database().collection('class')
+      .where({
+        _id: cloud.database().command.in(likeAll),
+      })
+      .get()
+      .then(res => {
+        return res
+      })
+    ctx.body = {
+      code: 0,
+      data: likeNum
+    }
   })
   return app.serve()
 }

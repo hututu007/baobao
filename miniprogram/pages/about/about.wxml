@@ -1,9 +1,18 @@
 <!-- 小程序的跳转api -->
 <view class="about">
-    <image class="img" src="../../images/my/about-bg.jpg">
-    </image>
+  <view class="touxiang">
+    <view class="img">
+      <image class="img-z" src="../../images/my/my@bg.png" mode='aspectFill'></image>
+    </view>
+  </view>
+  <view class="name">
+    created by 胡图图
+  </view>
+  <view class="guanyu">
+    <text class="mini">关注微信公众号</text>
+    <text class="max">公众号没开发好</text>
+    <text class="line"></text>
+    <text class="mini-t">欢迎通过公众号向我反馈bug</text>
+  </view>
+  <view class="model"></view>
 </view>
-<!-- <image class="about"  />
- <navigator class="nav" target="miniProgram" app-id="wx8ffc97ad5bcccc89" open-type="navigate">
- <image class="vendor" src="/images/my/vendor.png"></image>
- </navigator>  -->

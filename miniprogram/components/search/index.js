@@ -5,7 +5,11 @@ import {
 import {
   KeywordModel
 } from '../../models/keyword.js'
+import {
+  BookModel
+} from '../../models/book.js'
 const keywordModel = new KeywordModel()
+const bookModel = new BookModel()
 
 Component({
   /**
@@ -37,11 +41,12 @@ Component({
       historyWords: keywordModel.getHistory()
     })
 
-    // keywordModel.getHot().then(res => {
-    //   this.setData({
-    //     hotWords: res.hot
-    //   })
-    // })
+    bookModel.getHotList().then(res => {
+      let data = res.result.data.map(item => item.title)
+      this.setData({
+        hotWords: data
+      })
+    })
   },
 
   /**
