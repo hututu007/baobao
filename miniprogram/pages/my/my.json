@@ -2,7 +2,8 @@
     "usingComponents":{
       "v-tag": "/components/tag/index",
       "v-button": "/components/image-button/index",
-      "v-preview": "/components/preview/index"
+      "v-preview": "/components/preview/index",
+      "v-blog": "/components/blog/index"
     },
     "backgroundColor":"#f5f5f5",
     "navigationBarTitleText": "喜欢"

@@ -5,7 +5,8 @@
     "pages/book-detail/book-detail",
     "pages/my/my",
     "pages/about/about",
-    "pages/course/course"
+    "pages/course/course",
+    "pages/blog-edit/blog-edit"
   ],
   "window": {
     "backgroundColor": "#ffffff",
@@ -19,26 +20,29 @@
     "selectedColor": "#000000",
     "backgroundColor": "#ffffff",
     "color": "#c7c7c7",
-    "list": [{
-      "pagePath": "pages/playlist/playlist",
-      "text": "流行",
-      "iconPath": "images/music.png",
-      "selectedIconPath": "images/music-actived.png"
-    },
-    {
-      "pagePath": "pages/book/book",
-      "text": "故事",
-      "iconPath": "images/book.png",
-      "selectedIconPath": "images/book-actived.png"
-    },
-    {
-      "pagePath": "pages/my/my",
-      "text": "喜欢",
-      "iconPath": "images/profile.png",
-      "selectedIconPath": "images/profile-actived.png"
-    }
+    "list": [
+      {
+        "pagePath": "pages/playlist/playlist",
+        "text": "流行",
+        "iconPath": "images/music.png",
+        "selectedIconPath": "images/music-actived.png"
+      },
+      {
+        "pagePath": "pages/book/book",
+        "text": "故事",
+        "iconPath": "images/book.png",
+        "selectedIconPath": "images/book-actived.png"
+      },
+      {
+        "pagePath": "pages/my/my",
+        "text": "喜欢",
+        "iconPath": "images/profile.png",
+        "selectedIconPath": "images/profile-actived.png"
+      }
     ]
   },
   "sitemapLocation": "sitemap.json",
-  "requiredBackgroundModes":["audio"]
+  "requiredBackgroundModes": [
+    "audio"
+  ]
 }

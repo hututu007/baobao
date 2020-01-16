@@ -1,8 +1,8 @@
 /*
  * @Author: 胡海
  * @Date: 2019-12-09 21:23:49
- * @LastEditors: 胡海
- * @LastEditTime: 2019-12-14 22:35:07
+ * @LastEditors  : 胡海
+ * @LastEditTime : 2020-01-11 12:05:52
  * @Description: 
  */
 // 这个地方需要优化的是切换按钮逻辑
@@ -60,7 +60,8 @@ Page({
     //我有必要把逻辑全写在这儿吗？
     let index = this.data.classic.index
     let key = url == 'Left' ? classModel.getKey(index + 1) : classModel.getKey(index - 1)
-    let classic = wx.getStorageSync(key)
+    // let classic = wx.getStorageSync(key)
+    let classic = false
     if (!classic) {
       classModel.getClassRightOrLeft({
         url,
@@ -68,7 +69,7 @@ Page({
       }).then(res => {
         let data = res.result.data[0]
         this._getLike(data._id)
-        wx.setStorageSync(key, data)
+        // wx.setStorageSync(key, data)
         this.setData({
           leftDisable: classModel.isMaxIndex(data.index),
           rightDisable: classModel.isMIniIndex(data.index),

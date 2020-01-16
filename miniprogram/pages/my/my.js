@@ -1,8 +1,8 @@
 /*
  * @Author: 胡海
  * @Date: 2019-12-09 21:23:49
- * @LastEditors: 胡海
- * @LastEditTime: 2019-12-15 01:02:53
+ * @LastEditors  : 胡海
+ * @LastEditTime : 2020-01-16 21:43:02
  * @Description: 
  */
 import {
@@ -20,7 +20,8 @@ Page({
   data: {
     authorized: false,
     userInfo: null,
-    classics: null
+    classics: null,
+    isBlog:true,
   },
 
   onShow(options) {

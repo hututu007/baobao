@@ -1,3 +1,4 @@
+<view wx:if="{{!isBlog}}">
 <view class="container">
     <image src="/images/my/my@bg.png" class="bg"></image>
     <!-- <open-data type="userAvatarUrl" class="avatar avatar-position"/> -->
@@ -31,3 +32,7 @@
 
 </view>
 <image bind:tap="onStudy" class="study" src="/images/my/study.png"></image>
+</view>
+<view wx:if="{{isBlog}}">
+<v-blog></v-blog>
+</view>
