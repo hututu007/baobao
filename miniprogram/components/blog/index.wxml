@@ -2,13 +2,14 @@
   <!-- 头部 -->
   <view class="header">
     <view class="publish-container" bind:tap="onPublish">
-      <i class="iconfont icon-fabu"></i>发布
+      <i class="iconfont icon-fabu">
+        <image class="fa_bu" src="/images/fa_bu.png"></image>
+      </i>
     </view>
     <view class="search-container">
       <x-search iconfont="iconfont" icon-sousuo="icon-sousuo" bind:search="onSearch" />
     </view>
   </view>
-
   <!-- 博客卡片列表 -->
   <view class="blog-list">
     <block wx:for="{{blogList}}" wx:key="_id">
@@ -18,9 +19,6 @@
       </view>
     </block>
   </view>
-  
   <!-- 底部弹出层 -->
-  <x-login modalShow="{{modalShow}}" bind:loginsuccess="onLoginSuccess" bind:loginfail="onLoginFail">
-
-  </x-login>
+  <x-login modalShow="{{modalShow}}" bind:loginsuccess="onLoginSuccess" bind:loginfail="onLoginFail"></x-login>
 </view>

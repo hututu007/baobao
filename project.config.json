@@ -63,6 +63,21 @@
 					"id": -1,
 					"name": "pages/my/my",
 					"pathName": "pages/my/my",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "pages/blog-edit/blog-edit",
+					"pathName": "pages/blog-edit/blog-edit",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": 4,
+					"name": "pages/blog-comment/blog-comment",
+					"pathName": "pages/blog-comment/blog-comment",
+					"query": "",
 					"scene": null
 				}
 			]

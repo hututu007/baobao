@@ -21,13 +21,19 @@ Page({
     authorized: false,
     userInfo: null,
     classics: null,
-    isBlog:true,
+    isBlog: false,
+    isLike: false,
+  },
+
+  onLoad() {
+    this.getBlog()
   },
 
   onShow(options) {
     // 页面加载的时候干点啥
     this.userAuthorized1()
     this.getMyFavor()
+    this.blogId = this.selectComponent("#blogId");
   },
 
   getMyFavor() { //喜欢的期刊列表
@@ -38,7 +44,16 @@ Page({
       })
     })
   },
-  userAuthorized1() {// 监测用户是否已经授权过了
+  getBlog() { //
+    classModel.getBlog().then(res => {
+      let data = res.result.data.data[0].blogshow
+      this.setData({
+        isBlog: data,
+        isLike: !data,
+      })
+    })
+  },
+  userAuthorized1() { // 监测用户是否已经授权过了
     promisic(wx.getSetting)()
       .then(data => {
         if (data.authSetting['scope.userInfo']) {
@@ -56,7 +71,7 @@ Page({
   },
 
 
-  userAuthorized() {// 监测用户是否已经授权过了 没有用promise 的写法
+  userAuthorized() { // 监测用户是否已经授权过了 没有用promise 的写法
     wx.getSetting({
       success: data => {
         if (data.authSetting['scope.userInfo']) {
@@ -106,6 +121,24 @@ Page({
     wx.navigateTo({
       url: `/pages/classic-detail/classic-detail?cid=${cid}&type=${type}`
     })
+  },
+  /**
+   * 页面相关事件处理函数--监听用户下拉动作
+   */
+  onPullDownRefresh: function () {
+    this.blogId.onPullDownRefresh()
+  },
+  /**
+   * 页面上拉触底事件的处理函数
+   */
+  onReachBottom: function () {
+    this.blogId.onReachBottom()
+  },
+  /**
+   * 用户点击右上角分享
+   */
+  onShareAppMessage: function (event) {
+    this.blogId.onShareAppMessage()
   }
 
 

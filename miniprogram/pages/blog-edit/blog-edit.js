@@ -1,3 +1,7 @@
+import {
+  ClassModel
+} from '../../models/class.js'
+const classModel = new ClassModel()
 // 输入文字最大的个数
 const MAX_WORDS_NUM = 140
 // 最大上传图片数量
@@ -18,6 +22,8 @@ Page({
     footerBottom: 0,
     images: [],
     selectPhoto: true, // 添加图片元素是否显示
+    isBlog: false,
+    isLike: false,
   },
 
   /**
@@ -26,9 +32,19 @@ Page({
   onLoad: function (options) {
     // 拿到用户信息
     userInfo = options
+    this.getBlog()
+  },
+  getBlog() { //
+    classModel.getBlog().then(res => {
+      let data = res.result.data.data[0].blogshow
+      this.setData({
+        isBlog: data,
+        isLike: !data,
+      })
+    })
   },
 
-  onInput(event) {//监听输入的事件
+  onInput(event) { //监听输入的事件
     let wordsNum = event.detail.value.length
     if (wordsNum >= MAX_WORDS_NUM) {
       wordsNum = `最大字数为${MAX_WORDS_NUM}`
@@ -39,19 +55,19 @@ Page({
     content = event.detail.value
   },
 
-  onFocus(event) {// 光标激活事件/输入键盘弹出
+  onFocus(event) { // 光标激活事件/输入键盘弹出
     // 模拟器获取的键盘高度为0
     this.setData({
       footerBottom: event.detail.height,
     })
   },
-  onBlur() {// 光标离开事件/输入键盘收起
+  onBlur() { // 光标离开事件/输入键盘收起
     this.setData({
       footerBottom: 0,
     })
   },
 
-  onChooseImage() {// 选择图片事件
+  onChooseImage() { // 选择图片事件
     // 还能再选几张图片
     let max = MAX_IMG_NUM - this.data.images.length
     wx.chooseImage({
@@ -71,7 +87,7 @@ Page({
       },
     })
   },
-  onDelImage(event) {// 删除图片事件
+  onDelImage(event) { // 删除图片事件
     this.data.images.splice(event.target.dataset.index, 1)
     this.setData({
       images: this.data.images
@@ -83,7 +99,7 @@ Page({
     }
   },
 
-  onPreviewImage(event) {// 图片预览事件
+  onPreviewImage(event) { // 图片预览事件
     // 6/9
     wx.previewImage({
       urls: this.data.images,
@@ -91,7 +107,7 @@ Page({
     })
   },
 
-  send() {// 储存图片事件
+  send() { // 储存图片事件
     // 2、数据 -> 云数据库
     // 数据库：内容、图片fileID、openid、昵称、头像、时间
     // 1、图片 -> 云存储 fileID 云文件ID
@@ -149,12 +165,12 @@ Page({
         })
 
         // // 返回blog页面，并且刷新
-        // wx.navigateBack()
-        // const pages = getCurrentPages()
+        wx.navigateBack()
+        const pages = getCurrentPages()
         // // console.log(pages)
         // // 取到上一个页面
-        // const prevPage = pages[pages.length - 2]
-        // prevPage.onPullDownRefresh()
+        const prevPage = pages[pages.length - 2]
+        prevPage.onPullDownRefresh()
       })
     }).catch((err) => {
       wx.hideLoading()

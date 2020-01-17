@@ -60,6 +60,14 @@ class ClassModel extends HTTP {
       }
     })
   }
+  getBlog() { //获取字段
+    return this.request({
+      cloudFn: 'class',
+      data: {
+        $url: 'getBlog',
+      }
+    })
+  }
 
 isMIniIndex(index) { // 是否是最小的小的一期
   return index == 1 ? true : false

@@ -6,7 +6,8 @@
     "pages/my/my",
     "pages/about/about",
     "pages/course/course",
-    "pages/blog-edit/blog-edit"
+    "pages/blog-edit/blog-edit",
+    "pages/blog-comment/blog-comment"
   ],
   "window": {
     "backgroundColor": "#ffffff",

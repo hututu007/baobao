@@ -184,5 +184,16 @@ exports.main = async (event, context) => {
       data: likeNum
     }
   })
+  app.router('getBlog', async (ctx, next) => { // 获取blog
+    let blogShow = await cloud.database().collection('blogShow')
+      .get()
+      .then((res) => {
+        return res
+      })
+    ctx.body = {
+      code: 0,
+      data: blogShow
+    }
+  })
   return app.serve()
 }
